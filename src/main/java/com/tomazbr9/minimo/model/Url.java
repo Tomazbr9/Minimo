@@ -10,12 +10,12 @@ import lombok.Setter;
 import java.util.UUID;
 
 @Entity
-@Table(name = "tb_shortenedUrl")
+@Table(name = "tb_url")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class ShortenedUrl {
+public class Url {
 
     private UUID id;
     private String shortenedUrl;
