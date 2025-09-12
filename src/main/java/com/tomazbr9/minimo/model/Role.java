@@ -1,20 +1,21 @@
 package com.tomazbr9.minimo.model;
 
+import com.tomazbr9.minimo.enums.RoleName;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "tb_url")
+@Table(name = "tb_role")
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
 @Getter
 @Setter
 @Builder
-public class Url implements Serializable {
+public class Role implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -22,13 +23,6 @@ public class Url implements Serializable {
     @GeneratedValue
     private UUID id;
 
-    private String shortenedUrl;
-    private String originalUrl;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
-
-
+    @Enumerated(EnumType.STRING)
+    private RoleName name;
 }
