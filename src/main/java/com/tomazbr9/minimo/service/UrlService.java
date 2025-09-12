@@ -3,6 +3,7 @@ package com.tomazbr9.minimo.service;
 
 import com.tomazbr9.minimo.dto.urlDTO.UrlRequestDTO;
 import com.tomazbr9.minimo.dto.urlDTO.UrlResponseDTO;
+import com.tomazbr9.minimo.exception.UrlAlreadyExistsException;
 import com.tomazbr9.minimo.model.Url;
 import com.tomazbr9.minimo.model.User;
 import com.tomazbr9.minimo.repository.UrlRepository;
@@ -26,6 +27,10 @@ public class UrlService {
     public UrlResponseDTO createShortUrl(UrlRequestDTO request, UserDetailsImpl userDetails){
 
         User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
+
+        if(urlRepository.existsByShortenedUrl(request.shortenedUrl())){
+            throw new UrlAlreadyExistsException("Url já existe!");
+        }
 
         String newUrl = request.shortenedUrl() != null && !request.shortenedUrl().isBlank() ? request.shortenedUrl() : ShortUrlGenerator.generateShortUrl();
 
