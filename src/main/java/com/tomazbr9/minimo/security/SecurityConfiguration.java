@@ -29,7 +29,9 @@ public class SecurityConfiguration {
 
     // Endpoints que exigem perfil de Usuário
     public static final String[] ENDPOINTS_USER = {
-            "/v1/url/**"
+            "/v1/url/**",
+
+            "/v1/users/**"
     };
 
     // Endpoints que exigem perfil de ADMIN
