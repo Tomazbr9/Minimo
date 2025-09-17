@@ -24,14 +24,17 @@ public class SecurityConfiguration {
     // Endpoints que não exigem autenticação
     public static final String[] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = {
             "/v1/auth/register",
-            "/v1/auth/login"
+            "/v1/auth/login",
+
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
     };
 
     // Endpoints que exigem perfil de Usuário
     public static final String[] ENDPOINTS_USER = {
             "/v1/url/**",
-
             "/v1/users/**"
+
     };
 
     // Endpoints que exigem perfil de ADMIN
@@ -52,10 +55,10 @@ public class SecurityConfiguration {
                         // Libera acesso público para os endpoints sem autenticação
                         .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED).permitAll()
 
-                        // Restringe acesso aos endpoints CUSTOMER
+                        // Restringe acesso aos endpoints USER
                         .requestMatchers(ENDPOINTS_USER).hasRole("USER")
 
-                        // Restringe acesso aos endpoints ADMIN
+                        // Restringe acesso aos endpoints ADMINISTRATOR
                         .requestMatchers(ENDPOINTS_ADMIN).hasRole("ADMINISTRATOR")
 
                         // Qualquer outra rota exige autenticação

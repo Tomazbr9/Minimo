@@ -3,6 +3,8 @@ package com.tomazbr9.minimo.exception.handler;
 import com.tomazbr9.minimo.dto.exceptionDTO.ErrorResponseDTO;
 import com.tomazbr9.minimo.exception.UrlAlreadyExistsException;
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,6 +15,9 @@ import java.time.LocalDateTime;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+
     @ExceptionHandler(UrlAlreadyExistsException.class)
     public ResponseEntity<ErrorResponseDTO> handleUrlAlreadyException (UrlAlreadyExistsException exeption, HttpServletRequest request) {
         return buildErrorResponse(exeption.getMessage(), request.getRequestURI(), HttpStatus.CONFLICT);
@@ -20,6 +25,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDTO> handleGenericException(Exception exeption, HttpServletRequest request) {
+
+        logger.error("❌ Erro não tratado: ", exeption);
+
         return buildErrorResponse("Erro interno no servidor", request.getRequestURI(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
