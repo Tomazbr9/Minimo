@@ -14,4 +14,6 @@ public interface UrlRepository extends JpaRepository<Url, UUID> {
     boolean existsByShortenedUrl(String url);
 
     List<Url> findUrlByUser(User user);
+
+    Url findUrlByShortenedUrl(String shortUrl);
 }
