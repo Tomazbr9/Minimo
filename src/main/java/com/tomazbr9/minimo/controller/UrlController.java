@@ -2,6 +2,8 @@ package com.tomazbr9.minimo.controller;
 
 import com.tomazbr9.minimo.dto.urlDTO.UrlRequestDTO;
 import com.tomazbr9.minimo.dto.urlDTO.UrlResponseDTO;
+import com.tomazbr9.minimo.dto.userDTO.UserResponseDTO;
+import com.tomazbr9.minimo.model.User;
 import com.tomazbr9.minimo.security.model.UserDetailsImpl;
 import com.tomazbr9.minimo.service.UrlService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,11 +12,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
 
 @Tag(
         name = "Url",
@@ -26,6 +32,18 @@ public class UrlController {
 
     @Autowired
     private UrlService service;
+
+    @GetMapping
+    public ResponseEntity<List<UrlResponseDTO>> findUrls(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        List<UrlResponseDTO> urlsList = service.findUrls(userDetails);
+        return ResponseEntity.ok(urlsList);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UrlResponseDTO> findUrlById(@PathVariable UUID id, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        UrlResponseDTO response = service.findUrlById(id, userDetails);
+        return ResponseEntity.ok(response);
+    }
 
     @Operation(
             summary = "Criar URL encurtada",
@@ -51,5 +69,12 @@ public class UrlController {
 
         UrlResponseDTO response = service.createShortUrl(request, userDetails);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUrl(@PathVariable UUID id, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        service.deleteUrl(id, userDetails);
+        return ResponseEntity.noContent().build();
+
     }
 }

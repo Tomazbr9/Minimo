@@ -3,6 +3,7 @@ package com.tomazbr9.minimo.service;
 
 import com.tomazbr9.minimo.dto.urlDTO.UrlRequestDTO;
 import com.tomazbr9.minimo.dto.urlDTO.UrlResponseDTO;
+import com.tomazbr9.minimo.dto.userDTO.UserResponseDTO;
 import com.tomazbr9.minimo.exception.UrlAlreadyExistsException;
 import com.tomazbr9.minimo.model.Url;
 import com.tomazbr9.minimo.model.User;
@@ -14,6 +15,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.UUID;
+
 @Service
 public class UrlService {
 
@@ -24,9 +28,35 @@ public class UrlService {
     private UserRepository userRepository;
 
     @Transactional
+    public List<UrlResponseDTO> findUrls(UserDetailsImpl userDetails){
+
+        User user = checkIfUserExists(userDetails);
+
+        List<Url> urlsList = urlRepository.findUrlByUser(user);
+
+        return urlsList
+                .stream()
+                .map(
+                        url -> new UrlResponseDTO(
+                                url.getId(),
+                                url.getShortenedUrl(),
+                                url.getOriginalUrl()))
+                .toList();
+    }
+
+    @Transactional
+    public UrlResponseDTO findUrlById(UUID id, UserDetailsImpl userDetails){
+
+        Url url = urlRepository.findById(id).orElseThrow(() -> new RuntimeException("Url não encontrada."));
+        checkIfResourceBelongsToUser(userDetails, url);
+        return new UrlResponseDTO(url.getId(), url.getShortenedUrl(), url.getOriginalUrl());
+
+    }
+
+    @Transactional
     public UrlResponseDTO createShortUrl(UrlRequestDTO request, UserDetailsImpl userDetails){
 
-        User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
+        User user = checkIfUserExists(userDetails);
 
         if(urlRepository.existsByShortenedUrl(request.shortenedUrl())){
             throw new UrlAlreadyExistsException("Url já existe!");
@@ -44,6 +74,24 @@ public class UrlService {
         urlRepository.save(url);
 
         return new UrlResponseDTO(url.getId(), url.getShortenedUrl(), url.getOriginalUrl());
+    }
+
+    public void deleteUrl(UUID id, UserDetailsImpl userDetails){
+        Url url = urlRepository.findById(id).orElseThrow(() -> new RuntimeException("Url não encontrada!"));
+        checkIfResourceBelongsToUser(userDetails, url);
+        urlRepository.delete(url);
+    }
+
+    private User checkIfUserExists(UserDetailsImpl userDetails){
+        return userRepository.findByUsername(
+                userDetails.getUsername()
+        ).orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
+    }
+
+    private void checkIfResourceBelongsToUser(UserDetailsImpl userDetails, Url url){
+        if (!url.getUser().getUsername().equals(userDetails.getUsername())){
+            throw new RuntimeException("Permissão negada!");
+        }
     }
 
 }
