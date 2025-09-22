@@ -58,35 +58,34 @@ class UserControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "bruno") // simula usuário logado
     void shouldReturnAuthenticatedUser() throws Exception {
-        Mockito.when(userService.findAuthenticatedUser(any(UserDetailsImpl.class)))
+        Mockito.when(userService.findAuthenticatedUser(any()))
                 .thenReturn(userResponse);
 
         mockMvc.perform(get("/v1/users"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(userResponse.id().toString()))
+                .andExpect(jsonPath("$.id").value(userResponse.id()))
                 .andExpect(jsonPath("$.username").value("bruno"));
     }
 
+
     @Test
-    @WithMockUser(username = "bruno")
     void shouldUpdateUserSuccessfully() throws Exception {
         UserResponseDTO updatedResponse = new UserResponseDTO(userResponse.id(), updateDTO.username());
 
-        Mockito.when(userService.updateUser(any(UserUpdateDTO.class), any(UserDetailsImpl.class)))
+        Mockito.when(userService.updateUser(any(UserUpdateDTO.class), any()))
                 .thenReturn(updatedResponse);
 
         mockMvc.perform(put("/v1/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateDTO)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(updatedResponse.id().toString()))
+                .andExpect(jsonPath("$.id").value(updatedResponse.id().toString())) // UUID -> String
                 .andExpect(jsonPath("$.username").value("novoBruno"));
     }
 
+
     @Test
-    @WithMockUser(username = "bruno")
     void shouldDeleteUserSuccessfully() throws Exception {
         Mockito.doNothing().when(userService).deleteUser(any(UserDetailsImpl.class));
 

@@ -1,26 +1,21 @@
 package com.tomazbr9.minimo.service;
 
-import com.tomazbr9.minimo.dto.urlDTO.UrlRequestDTO;
 import com.tomazbr9.minimo.dto.urlDTO.UrlResponseDTO;
-import com.tomazbr9.minimo.exception.UrlAlreadyExistsException;
 import com.tomazbr9.minimo.model.Url;
 import com.tomazbr9.minimo.model.User;
 import com.tomazbr9.minimo.repository.UrlRepository;
 import com.tomazbr9.minimo.repository.UserRepository;
 import com.tomazbr9.minimo.security.model.UserDetailsImpl;
-import com.tomazbr9.minimo.util.ShortUrlGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import org.mockito.MockitoAnnotations;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -51,78 +46,121 @@ class UrlServiceTest {
         userDetails = new UserDetailsImpl(user);
     }
 
+    // -------------------- findUrls --------------------
     @Test
-    void shouldCreateShortUrlSuccessfully() {
-        UrlRequestDTO request = new UrlRequestDTO("myAlias", "http://example.com");
-
-        when(userRepository.findByUsername("bruno")).thenReturn(Optional.of(user));
-        when(urlRepository.existsByShortenedUrl("myAlias")).thenReturn(false);
-
-        Url savedUrl = Url.builder()
+    void shouldReturnUrlsForUser() {
+        Url url = Url.builder()
                 .id(UUID.randomUUID())
                 .originalUrl("http://example.com")
-                .shortenedUrl("myAlias")
+                .shortenedUrl("alias")
                 .user(user)
                 .build();
 
-        when(urlRepository.save(any(Url.class))).thenReturn(savedUrl);
+        when(userRepository.findByUsername("bruno")).thenReturn(Optional.of(user));
+        when(urlRepository.findUrlByUser(user)).thenReturn(List.of(url));
 
-        UrlResponseDTO response = urlService.createShortUrl(request, userDetails);
+        List<UrlResponseDTO> urls = urlService.findUrls(userDetails);
+
+        assertEquals(1, urls.size());
+        assertEquals("alias", urls.get(0).shortenedUrl());
+        assertEquals("http://example.com", urls.get(0).originalUrl());
+    }
+
+    // -------------------- findUrlById --------------------
+    @Test
+    void shouldReturnUrlById() {
+        UUID id = UUID.randomUUID();
+        Url url = Url.builder()
+                .id(id)
+                .originalUrl("http://example.com")
+                .shortenedUrl("alias")
+                .user(user)
+                .build();
+
+        when(urlRepository.findById(id)).thenReturn(Optional.of(url));
+
+        UrlResponseDTO response = urlService.findUrlById(id, userDetails);
 
         assertNotNull(response);
-        assertEquals("myAlias", response.shortenedUrl());
+        assertEquals("alias", response.shortenedUrl());
         assertEquals("http://example.com", response.originalUrl());
-        verify(urlRepository).save(any(Url.class));
     }
 
     @Test
-    void shouldThrowExceptionIfUserNotFound() {
-        UrlRequestDTO request = new UrlRequestDTO("http://example.com", "alias");
+    void shouldThrowExceptionWhenUrlNotFoundById() {
+        UUID id = UUID.randomUUID();
 
-        when(userRepository.findByUsername("bruno")).thenReturn(Optional.empty());
+        when(urlRepository.findById(id)).thenReturn(Optional.empty());
 
         RuntimeException ex = assertThrows(RuntimeException.class, () ->
-                urlService.createShortUrl(request, userDetails));
+                urlService.findUrlById(id, userDetails));
 
-        assertEquals("Usuário não encontrado.", ex.getMessage());
+        assertEquals("Url não encontrada.", ex.getMessage());
     }
 
     @Test
-    void shouldThrowExceptionIfUrlAlreadyExists() {
-        UrlRequestDTO request = new UrlRequestDTO("http://example.com", "alias");
-
-        when(userRepository.findByUsername("bruno")).thenReturn(Optional.of(user));
-        when(urlRepository.existsByShortenedUrl(anyString())).thenReturn(true); // <- corrigido
-
-        UrlAlreadyExistsException ex = assertThrows(UrlAlreadyExistsException.class, () ->
-                urlService.createShortUrl(request, userDetails));
-
-        assertEquals("Url já existe!", ex.getMessage());
-    }
-
-    @Test
-    void shouldGenerateShortUrlAutomaticallyWhenAliasIsNull() {
-        UrlRequestDTO request = new UrlRequestDTO(null, "http://example.com");
-
-        when(userRepository.findByUsername("bruno")).thenReturn(Optional.of(user));
-        when(urlRepository.existsByShortenedUrl(anyString())).thenReturn(false);
-
-        Url savedUrl = Url.builder()
+    void shouldThrowExceptionWhenUrlDoesNotBelongToUser() {
+        UUID id = UUID.randomUUID();
+        User anotherUser = User.builder()
                 .id(UUID.randomUUID())
+                .username("isael")
+                .password("123")
+                .build();
+
+        Url url = Url.builder()
+                .id(id)
                 .originalUrl("http://example.com")
-                .shortenedUrl("abc123") // Mocking ShortUrlGenerator
+                .shortenedUrl("alias")
+                .user(anotherUser)
+                .build();
+
+        when(urlRepository.findById(id)).thenReturn(Optional.of(url));
+
+        RuntimeException ex = assertThrows(RuntimeException.class, () ->
+                urlService.findUrlById(id, userDetails));
+
+        assertEquals("Permissão negada!", ex.getMessage());
+    }
+
+    // -------------------- deleteUrl --------------------
+    @Test
+    void shouldDeleteUrlSuccessfully() {
+        UUID id = UUID.randomUUID();
+        Url url = Url.builder()
+                .id(id)
+                .originalUrl("http://example.com")
+                .shortenedUrl("alias")
                 .user(user)
                 .build();
 
-        try (MockedStatic<ShortUrlGenerator> mockedStatic = mockStatic(ShortUrlGenerator.class)) {
-            mockedStatic.when(ShortUrlGenerator::generateShortUrl).thenReturn("abc123");
-            when(urlRepository.save(any(Url.class))).thenReturn(savedUrl);
+        when(urlRepository.findById(id)).thenReturn(Optional.of(url));
 
-            UrlResponseDTO response = urlService.createShortUrl(request, userDetails);
+        urlService.deleteUrl(id, userDetails);
 
-            assertNotNull(response);
-            assertEquals("abc123", response.shortenedUrl());
-            assertEquals("http://example.com", response.originalUrl());
-        }
+        verify(urlRepository).delete(url);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenDeletingUrlThatDoesNotBelongToUser() {
+        UUID id = UUID.randomUUID();
+        User anotherUser = User.builder()
+                .id(UUID.randomUUID())
+                .username("eduardo")
+                .password("123")
+                .build();
+
+        Url url = Url.builder()
+                .id(id)
+                .originalUrl("http://example.com")
+                .shortenedUrl("alias")
+                .user(anotherUser)
+                .build();
+
+        when(urlRepository.findById(id)).thenReturn(Optional.of(url));
+
+        RuntimeException ex = assertThrows(RuntimeException.class, () ->
+                urlService.deleteUrl(id, userDetails));
+
+        assertEquals("Permissão negada!", ex.getMessage());
     }
 }
