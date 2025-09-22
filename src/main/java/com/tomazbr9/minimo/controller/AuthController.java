@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +43,7 @@ public class AuthController {
                     required = true,
                     content = @Content(schema = @Schema(implementation = UserRequestDTO.class))
             )
-            @RequestBody UserRequestDTO request) {
+            @RequestBody @Valid UserRequestDTO request) {
         service.registerUser(request);
         return new ResponseEntity<>("Usuário Criado com sucesso!", HttpStatus.CREATED);
     }

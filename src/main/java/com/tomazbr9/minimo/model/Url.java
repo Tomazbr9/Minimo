@@ -23,6 +23,9 @@ public class Url implements Serializable {
     private UUID id;
 
     private String shortenedUrl;
+
+    @Lob
+    @Column(nullable = false)
     private String originalUrl;
 
     @ManyToOne
