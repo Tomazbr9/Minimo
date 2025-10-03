@@ -35,6 +35,11 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
+        if("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         // Verifica se o endpoint exige autenticação
         if (checkIfEndpointRequiresAuthentication(request)) {
             String token = recoveryToken(request);

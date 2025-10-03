@@ -4,7 +4,9 @@ import com.tomazbr9.minimo.security.filter.UserAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -54,8 +56,11 @@ public class SecurityConfiguration {
                 )
 
                 .authorizeHttpRequests(auth -> auth
+
                         // Libera acesso público para os endpoints sem autenticação
                         .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED).permitAll()
+
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
                         // Restringe acesso aos endpoints USER
                         .requestMatchers(ENDPOINTS_USER).hasRole("USER")
@@ -69,6 +74,7 @@ public class SecurityConfiguration {
 
                 // Adiciona o filtro de autenticação JWT antes do filtro padrão do Spring
                 .addFilterBefore(userAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .cors(Customizer.withDefaults())
                 .build();
     }
 
