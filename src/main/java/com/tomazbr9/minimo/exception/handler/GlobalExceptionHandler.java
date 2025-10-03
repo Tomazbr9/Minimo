@@ -2,6 +2,7 @@ package com.tomazbr9.minimo.exception.handler;
 
 import com.tomazbr9.minimo.dto.exceptionDTO.ErrorResponseDTO;
 import com.tomazbr9.minimo.exception.UrlAlreadyExistsException;
+import com.tomazbr9.minimo.exception.UserNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,10 +24,16 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(exeption.getMessage(), request.getRequestURI(), HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponseDTO> handleUserNotFoundException(UserNotFoundException exception, HttpServletRequest request) {
+        return buildErrorResponse(exception.getMessage(), request.getRequestURI(), HttpStatus.NOT_FOUND);
+    }
+
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDTO> handleGenericException(Exception exeption, HttpServletRequest request) {
 
-        logger.error("❌ Erro não tratado: ", exeption);
+        logger.error("Erro não tratado: ", exeption);
 
         return buildErrorResponse("Erro interno no servidor", request.getRequestURI(), HttpStatus.INTERNAL_SERVER_ERROR);
     }

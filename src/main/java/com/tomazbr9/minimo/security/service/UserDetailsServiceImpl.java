@@ -1,5 +1,6 @@
 package com.tomazbr9.minimo.security.service;
 
+import com.tomazbr9.minimo.exception.UserNotFoundException;
 import com.tomazbr9.minimo.model.User;
 import com.tomazbr9.minimo.repository.UserRepository;
 import com.tomazbr9.minimo.security.model.UserDetailsImpl;
@@ -17,7 +18,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("Usuário não encontrado."));
         return new UserDetailsImpl(user);
     }
 }
