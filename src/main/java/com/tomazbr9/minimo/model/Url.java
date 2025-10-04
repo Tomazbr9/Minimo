@@ -22,6 +22,11 @@ public class Url implements Serializable {
     @GeneratedValue
     private UUID id;
 
+    private String urlName;
+
+    @Builder.Default
+    private Integer totalClicks = 0;
+
     private String shortenedUrl;
 
     @Lob
@@ -32,6 +37,8 @@ public class Url implements Serializable {
     @JoinColumn(name = "user_id")
     private User user;
 
-
+    public void incrementClicks() {
+        this.totalClicks++;
+    }
 
 }

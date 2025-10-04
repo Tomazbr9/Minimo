@@ -39,6 +39,8 @@ public class UrlService {
                 .map(
                         url -> new UrlResponseDTO(
                                 url.getId(),
+                                url.getUrlName(),
+                                url.getTotalClicks(),
                                 url.getShortenedUrl(),
                                 url.getOriginalUrl()))
                 .toList();
@@ -49,7 +51,7 @@ public class UrlService {
 
         Url url = urlRepository.findById(id).orElseThrow(() -> new RuntimeException("Url não encontrada."));
         checkIfResourceBelongsToUser(userDetails, url);
-        return new UrlResponseDTO(url.getId(), url.getShortenedUrl(), url.getOriginalUrl());
+        return new UrlResponseDTO(url.getId(), url.getUrlName(), url.getTotalClicks(), url.getShortenedUrl(), url.getOriginalUrl());
 
     }
 
@@ -66,6 +68,7 @@ public class UrlService {
 
         // Constroi a url e gera uma url encurtada
         Url url = Url.builder()
+                .urlName(request.urlName())
                 .originalUrl(request.originalUrl())
                 .shortenedUrl(newUrl)
                 .user(user)
@@ -73,7 +76,7 @@ public class UrlService {
 
         urlRepository.save(url);
 
-        return new UrlResponseDTO(url.getId(), url.getShortenedUrl(), url.getOriginalUrl());
+        return new UrlResponseDTO(url.getId(), url.getUrlName(), url.getTotalClicks(), url.getShortenedUrl(), url.getOriginalUrl());
     }
 
     public void deleteUrl(UUID id, UserDetailsImpl userDetails){

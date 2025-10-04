@@ -50,16 +50,16 @@ class UrlControllerTest {
 
     @BeforeEach
     void setUp() {
-        requestDTO = new UrlRequestDTO("myAlias", "http://example.com");
-        responseDTO = new UrlResponseDTO(UUID.randomUUID(), "myAlias", "http://example.com");
+        requestDTO = new UrlRequestDTO("myUrl","myAlias", "http://example.com");
+        responseDTO = new UrlResponseDTO(UUID.randomUUID(), "myAlias", 10, "myAlias", "http://example.com");
     }
 
     @Test
     void shouldReturnAllUserUrls() throws Exception {
 
         List<UrlResponseDTO> response = List.of(
-                new UrlResponseDTO(UUID.randomUUID(), "myAlias1", "http://example.com"),
-                new UrlResponseDTO(UUID.randomUUID(), "myAlias2", "http://example.com")
+                new UrlResponseDTO(UUID.randomUUID(), "myUrl1", 10, "myAlias1", "http://example.com"),
+                new UrlResponseDTO(UUID.randomUUID(), "myUrl2", 10, "myAlias2", "http://example.com")
         );
 
         Mockito.when(urlService.findUrls(any())).thenReturn(response);
@@ -79,6 +79,8 @@ class UrlControllerTest {
 
         UrlResponseDTO response = new UrlResponseDTO(
                 id,
+                "myUrl",
+                10,
                 "myAlias",
                 "http://example.com"
         );

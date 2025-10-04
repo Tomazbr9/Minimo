@@ -15,6 +15,9 @@ public class RedirectService {
     public String getOriginalUrl(String shortUrl){
         Url url = urlRepository.findUrlByShortenedUrl(shortUrl);
 
+        url.incrementClicks();
+        urlRepository.save(url);
+
         return url.getOriginalUrl();
 
     }

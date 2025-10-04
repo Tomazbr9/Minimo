@@ -5,6 +5,8 @@ import java.util.UUID;
 public record UrlResponseDTO(
 
         UUID id,
+        String urlName,
+        Integer totalClicks,
         String shortenedUrl,
         String originalUrl
 ) {

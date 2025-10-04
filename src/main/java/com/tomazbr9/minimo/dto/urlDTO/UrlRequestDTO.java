@@ -8,6 +8,9 @@ public record UrlRequestDTO(
 
         String shortenedUrl,
 
+        @NotBlank(message = "Por favor, digite o nome da url")
+        String urlName,
+
         @NotBlank(message = "Url é obrigatória")
         String originalUrl
 ) {
