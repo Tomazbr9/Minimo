@@ -1,9 +1,9 @@
 package com.tomazbr9.minimo.service;
 
 
+import com.tomazbr9.minimo.dto.urlDTO.TotalClicksAndMostClickedDTO;
 import com.tomazbr9.minimo.dto.urlDTO.UrlRequestDTO;
 import com.tomazbr9.minimo.dto.urlDTO.UrlResponseDTO;
-import com.tomazbr9.minimo.dto.userDTO.UserResponseDTO;
 import com.tomazbr9.minimo.exception.UrlAlreadyExistsException;
 import com.tomazbr9.minimo.model.Url;
 import com.tomazbr9.minimo.model.User;
@@ -83,6 +83,27 @@ public class UrlService {
         Url url = urlRepository.findById(id).orElseThrow(() -> new RuntimeException("Url não encontrada!"));
         checkIfResourceBelongsToUser(userDetails, url);
         urlRepository.delete(url);
+    }
+
+    public TotalClicksAndMostClickedDTO totalClicksOfAllUrls(UserDetailsImpl userDetails){
+
+        User user = checkIfUserExists(userDetails);
+
+        List<Url> urlsList = urlRepository.findUrlByUser(user);
+
+        Integer totalClicks = 0;
+        Integer mostClicked = 0;
+
+        for(Url url : urlsList){
+            totalClicks += url.getTotalClicks();
+
+            if (mostClicked < url.getTotalClicks()){
+                mostClicked = url.getTotalClicks();
+            }
+        }
+
+        return new TotalClicksAndMostClickedDTO(totalClicks, mostClicked);
+
     }
 
     private User checkIfUserExists(UserDetailsImpl userDetails){

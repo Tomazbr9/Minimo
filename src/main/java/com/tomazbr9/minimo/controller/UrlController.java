@@ -1,5 +1,6 @@
 package com.tomazbr9.minimo.controller;
 
+import com.tomazbr9.minimo.dto.urlDTO.TotalClicksAndMostClickedDTO;
 import com.tomazbr9.minimo.dto.urlDTO.UrlRequestDTO;
 import com.tomazbr9.minimo.dto.urlDTO.UrlResponseDTO;
 import com.tomazbr9.minimo.security.model.UserDetailsImpl;
@@ -105,5 +106,12 @@ public class UrlController {
         service.deleteUrl(id, userDetails);
         return ResponseEntity.noContent().build();
 
+    }
+
+    @GetMapping("/totalclicksurls")
+    public ResponseEntity<TotalClicksAndMostClickedDTO> totalClicksOfAllUrls(@AuthenticationPrincipal UserDetailsImpl userDetails){
+
+        TotalClicksAndMostClickedDTO response = service.totalClicksOfAllUrls(userDetails);
+        return ResponseEntity.ok(response);
     }
 }
