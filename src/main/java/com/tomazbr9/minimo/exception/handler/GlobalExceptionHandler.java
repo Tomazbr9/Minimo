@@ -1,6 +1,7 @@
 package com.tomazbr9.minimo.exception.handler;
 
 import com.tomazbr9.minimo.dto.exceptionDTO.ErrorResponseDTO;
+import com.tomazbr9.minimo.exception.PermissionDeniedToAccessResourceException;
 import com.tomazbr9.minimo.exception.UrlAlreadyExistsException;
 import com.tomazbr9.minimo.exception.UrlNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,6 +27,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UrlNotFoundException.class)
     public ResponseEntity<ErrorResponseDTO> handleUrlNotFoundException(UrlNotFoundException exception, HttpServletRequest request) {
         return buildErrorResponse(exception.getMessage(), request.getRequestURI(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(PermissionDeniedToAccessResourceException.class)
+    public ResponseEntity<ErrorResponseDTO> handlePermissionDaniedToAccessResourceException(PermissionDeniedToAccessResourceException exception, HttpServletRequest request) {
+        return buildErrorResponse(exception.getMessage(), request.getRequestURI(), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(Exception.class)

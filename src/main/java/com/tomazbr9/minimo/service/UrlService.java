@@ -5,6 +5,7 @@ import com.tomazbr9.minimo.dto.urlDTO.TotalClicksAndMostClickedDTO;
 import com.tomazbr9.minimo.dto.urlDTO.UrlPatchDTO;
 import com.tomazbr9.minimo.dto.urlDTO.UrlRequestDTO;
 import com.tomazbr9.minimo.dto.urlDTO.UrlResponseDTO;
+import com.tomazbr9.minimo.exception.PermissionDeniedToAccessResourceException;
 import com.tomazbr9.minimo.exception.UrlAlreadyExistsException;
 import com.tomazbr9.minimo.exception.UrlNotFoundException;
 import com.tomazbr9.minimo.model.Url;
@@ -135,7 +136,7 @@ public class UrlService {
 
     private void checkIfResourceBelongsToUser(UserDetailsImpl userDetails, Url url){
         if (!url.getUser().getUsername().equals(userDetails.getUsername())){
-            throw new RuntimeException("Permissão negada!");
+            throw new PermissionDeniedToAccessResourceException("Sem permissão ao recurso");
         }
     }
 
