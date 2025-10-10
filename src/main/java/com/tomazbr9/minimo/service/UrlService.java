@@ -2,9 +2,11 @@ package com.tomazbr9.minimo.service;
 
 
 import com.tomazbr9.minimo.dto.urlDTO.TotalClicksAndMostClickedDTO;
+import com.tomazbr9.minimo.dto.urlDTO.UrlPatchDTO;
 import com.tomazbr9.minimo.dto.urlDTO.UrlRequestDTO;
 import com.tomazbr9.minimo.dto.urlDTO.UrlResponseDTO;
 import com.tomazbr9.minimo.exception.UrlAlreadyExistsException;
+import com.tomazbr9.minimo.exception.UrlNotFoundException;
 import com.tomazbr9.minimo.model.Url;
 import com.tomazbr9.minimo.model.User;
 import com.tomazbr9.minimo.repository.UrlRepository;
@@ -13,6 +15,7 @@ import com.tomazbr9.minimo.security.model.UserDetailsImpl;
 import com.tomazbr9.minimo.util.ShortUrlGenerator;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -79,6 +82,24 @@ public class UrlService {
         return new UrlResponseDTO(url.getId(), url.getUrlName(), url.getTotalClicks(), url.getShortenedUrl(), url.getOriginalUrl());
     }
 
+    public UrlPatchDTO patchUrl(UUID id, UrlPatchDTO request, UserDetailsImpl userDetails){
+        Url url = checkIfUrlExists(id);
+
+        if(request.originalUrl() != null){
+            url.setOriginalUrl(request.originalUrl());
+
+        }
+
+        if(request.urlName() != null){
+            url.setUrlName(request.urlName());
+        }
+
+        urlRepository.save(url);
+
+        return new UrlPatchDTO(url.getUrlName(), url.getOriginalUrl());
+
+    }
+
     public void deleteUrl(UUID id, UserDetailsImpl userDetails){
         Url url = urlRepository.findById(id).orElseThrow(() -> new RuntimeException("Url não encontrada!"));
         checkIfResourceBelongsToUser(userDetails, url);
@@ -109,13 +130,17 @@ public class UrlService {
     private User checkIfUserExists(UserDetailsImpl userDetails){
         return userRepository.findByUsername(
                 userDetails.getUsername()
-        ).orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
+        ).orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado."));
     }
 
     private void checkIfResourceBelongsToUser(UserDetailsImpl userDetails, Url url){
         if (!url.getUser().getUsername().equals(userDetails.getUsername())){
             throw new RuntimeException("Permissão negada!");
         }
+    }
+
+    private Url checkIfUrlExists(UUID id) {
+        return urlRepository.findById(id).orElseThrow(() -> new UrlNotFoundException("Url não encontrada!"));
     }
 
 }

@@ -6,6 +6,7 @@ import com.tomazbr9.minimo.model.User;
 import com.tomazbr9.minimo.repository.UserRepository;
 import com.tomazbr9.minimo.security.model.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -38,7 +39,7 @@ public class UserService {
     private User checkIfUserExists(UserDetailsImpl userDetails){
         return userRepository.findByUsername(
                 userDetails.getUsername()
-        ).orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
+        ).orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado."));
     }
 
 }

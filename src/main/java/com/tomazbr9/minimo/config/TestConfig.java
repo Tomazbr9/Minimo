@@ -45,7 +45,7 @@ public class TestConfig implements CommandLineRunner {
 
         User user = User.builder()
                 .username("alex")
-                .password(securityConfiguration.passwordEncoder().encode("12345"))
+                .password(securityConfiguration.passwordEncoder().encode("123456"))
                 .roles(List.of(userRole)).build();
 
         Url url1 = Url.builder()

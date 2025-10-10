@@ -1,6 +1,7 @@
 package com.tomazbr9.minimo.controller;
 
 import com.tomazbr9.minimo.dto.urlDTO.TotalClicksAndMostClickedDTO;
+import com.tomazbr9.minimo.dto.urlDTO.UrlPatchDTO;
 import com.tomazbr9.minimo.dto.urlDTO.UrlRequestDTO;
 import com.tomazbr9.minimo.dto.urlDTO.UrlResponseDTO;
 import com.tomazbr9.minimo.security.model.UserDetailsImpl;
@@ -99,6 +100,15 @@ public class UrlController {
 
         UrlResponseDTO response = service.createShortUrl(request, userDetails);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<UrlPatchDTO> patchUrl(@PathVariable UUID id, @RequestBody UrlPatchDTO request, @AuthenticationPrincipal UserDetailsImpl userDetails){
+
+        UrlPatchDTO response = service.patchUrl(id, request, userDetails);
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
+
     }
 
     @DeleteMapping("/{id}")

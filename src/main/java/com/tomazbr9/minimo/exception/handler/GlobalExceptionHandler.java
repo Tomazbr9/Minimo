@@ -2,7 +2,7 @@ package com.tomazbr9.minimo.exception.handler;
 
 import com.tomazbr9.minimo.dto.exceptionDTO.ErrorResponseDTO;
 import com.tomazbr9.minimo.exception.UrlAlreadyExistsException;
-import com.tomazbr9.minimo.exception.UserNotFoundException;
+import com.tomazbr9.minimo.exception.UrlNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,17 +18,15 @@ public class GlobalExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-
     @ExceptionHandler(UrlAlreadyExistsException.class)
     public ResponseEntity<ErrorResponseDTO> handleUrlAlreadyException (UrlAlreadyExistsException exeption, HttpServletRequest request) {
         return buildErrorResponse(exeption.getMessage(), request.getRequestURI(), HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ErrorResponseDTO> handleUserNotFoundException(UserNotFoundException exception, HttpServletRequest request) {
+    @ExceptionHandler(UrlNotFoundException.class)
+    public ResponseEntity<ErrorResponseDTO> handleUrlNotFoundException(UrlNotFoundException exception, HttpServletRequest request) {
         return buildErrorResponse(exception.getMessage(), request.getRequestURI(), HttpStatus.NOT_FOUND);
     }
-
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDTO> handleGenericException(Exception exeption, HttpServletRequest request) {
