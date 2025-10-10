@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
@@ -28,6 +29,8 @@ public class Url implements Serializable {
     private Integer totalClicks = 0;
 
     private String shortenedUrl;
+
+    private LocalDate createdIn;
 
     @Lob
     @Column(nullable = false)

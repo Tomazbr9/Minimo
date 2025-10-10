@@ -1,5 +1,6 @@
 package com.tomazbr9.minimo.dto.urlDTO;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 public record UrlResponseDTO(
@@ -8,6 +9,7 @@ public record UrlResponseDTO(
         String urlName,
         Integer totalClicks,
         String shortenedUrl,
-        String originalUrl
+        String originalUrl,
+        LocalDate createdIn
 ) {
 }

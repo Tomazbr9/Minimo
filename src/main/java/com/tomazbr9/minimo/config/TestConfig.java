@@ -13,6 +13,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -52,6 +53,7 @@ public class TestConfig implements CommandLineRunner {
                 .urlName("link de afiliado")
                 .originalUrl("http://hotmart.com/48028208208408420482048")
                 .shortenedUrl("5fhkt89")
+                .createdIn(LocalDate.now())
                 .user(user)
                 .totalClicks(10).build();
 
@@ -59,6 +61,7 @@ public class TestConfig implements CommandLineRunner {
                 .urlName("link de video do youtube")
                 .originalUrl("http://youtube.com.br/83830830850385jfdj32")
                 .shortenedUrl("23vofjv4")
+                .createdIn(LocalDate.now())
                 .user(user)
                 .totalClicks(10).build();
 

@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -46,16 +47,20 @@ public class UrlService {
                                 url.getUrlName(),
                                 url.getTotalClicks(),
                                 url.getShortenedUrl(),
-                                url.getOriginalUrl()))
+                                url.getOriginalUrl(),
+                                url.getCreatedIn()
+                        )
+
+                )
                 .toList();
     }
 
     @Transactional
     public UrlResponseDTO findUrlById(UUID id, UserDetailsImpl userDetails){
 
-        Url url = urlRepository.findById(id).orElseThrow(() -> new RuntimeException("Url não encontrada."));
+        Url url = checkIfUrlExists(id);
         checkIfResourceBelongsToUser(userDetails, url);
-        return new UrlResponseDTO(url.getId(), url.getUrlName(), url.getTotalClicks(), url.getShortenedUrl(), url.getOriginalUrl());
+        return new UrlResponseDTO(url.getId(), url.getUrlName(), url.getTotalClicks(), url.getShortenedUrl(), url.getOriginalUrl(), url.getCreatedIn());
 
     }
 
@@ -75,14 +80,16 @@ public class UrlService {
                 .urlName(request.urlName())
                 .originalUrl(request.originalUrl())
                 .shortenedUrl(newUrl)
+                .createdIn(LocalDate.now())
                 .user(user)
                 .build();
 
         urlRepository.save(url);
 
-        return new UrlResponseDTO(url.getId(), url.getUrlName(), url.getTotalClicks(), url.getShortenedUrl(), url.getOriginalUrl());
+        return new UrlResponseDTO(url.getId(), url.getUrlName(), url.getTotalClicks(), url.getShortenedUrl(), url.getOriginalUrl(), url.getCreatedIn());
     }
 
+    @Transactional
     public UrlPatchDTO patchUrl(UUID id, UrlPatchDTO request, UserDetailsImpl userDetails){
         Url url = checkIfUrlExists(id);
 
@@ -101,8 +108,9 @@ public class UrlService {
 
     }
 
+    @Transactional
     public void deleteUrl(UUID id, UserDetailsImpl userDetails){
-        Url url = urlRepository.findById(id).orElseThrow(() -> new RuntimeException("Url não encontrada!"));
+        Url url = checkIfUrlExists(id);
         checkIfResourceBelongsToUser(userDetails, url);
         urlRepository.delete(url);
     }
