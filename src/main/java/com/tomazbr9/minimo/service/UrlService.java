@@ -2,7 +2,7 @@ package com.tomazbr9.minimo.service;
 
 
 import com.tomazbr9.minimo.dto.urlDTO.TotalClicksAndMostClickedDTO;
-import com.tomazbr9.minimo.dto.urlDTO.UrlPatchDTO;
+import com.tomazbr9.minimo.dto.urlDTO.UrlPutDTO;
 import com.tomazbr9.minimo.dto.urlDTO.UrlRequestDTO;
 import com.tomazbr9.minimo.dto.urlDTO.UrlResponseDTO;
 import com.tomazbr9.minimo.exception.PermissionDeniedToAccessResourceException;
@@ -90,21 +90,15 @@ public class UrlService {
     }
 
     @Transactional
-    public UrlPatchDTO patchUrl(UUID id, UrlPatchDTO request, UserDetailsImpl userDetails){
+    public UrlPutDTO putUrl(UUID id, UrlPutDTO request, UserDetailsImpl userDetails){
         Url url = checkIfUrlExists(id);
 
-        if(request.originalUrl() != null){
-            url.setOriginalUrl(request.originalUrl());
-
-        }
-
-        if(request.urlName() != null){
-            url.setUrlName(request.urlName());
-        }
+        url.setUrlName(request.urlName());
+        url.setOriginalUrl(request.originalUrl());
 
         urlRepository.save(url);
 
-        return new UrlPatchDTO(url.getUrlName(), url.getOriginalUrl());
+        return new UrlPutDTO(url.getUrlName(), url.getOriginalUrl());
 
     }
 
