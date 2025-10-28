@@ -40,7 +40,7 @@ class UrlServiceTest {
         user = User.builder()
                 .id(UUID.randomUUID())
                 .username("bruno")
-                .password("123")
+                .password("123456")
                 .build();
 
         userDetails = new UserDetailsImpl(user);
@@ -95,7 +95,7 @@ class UrlServiceTest {
         RuntimeException ex = assertThrows(RuntimeException.class, () ->
                 urlService.findUrlById(id, userDetails));
 
-        assertEquals("Url não encontrada.", ex.getMessage());
+        assertEquals("Url não encontrada!", ex.getMessage());
     }
 
     @Test
@@ -104,7 +104,7 @@ class UrlServiceTest {
         User anotherUser = User.builder()
                 .id(UUID.randomUUID())
                 .username("isael")
-                .password("123")
+                .password("123456")
                 .build();
 
         Url url = Url.builder()
@@ -119,7 +119,7 @@ class UrlServiceTest {
         RuntimeException ex = assertThrows(RuntimeException.class, () ->
                 urlService.findUrlById(id, userDetails));
 
-        assertEquals("Permissão negada!", ex.getMessage());
+        assertEquals("Sem permissão ao recurso", ex.getMessage());
     }
 
     // -------------------- deleteUrl --------------------
@@ -146,7 +146,7 @@ class UrlServiceTest {
         User anotherUser = User.builder()
                 .id(UUID.randomUUID())
                 .username("eduardo")
-                .password("123")
+                .password("123456")
                 .build();
 
         Url url = Url.builder()
@@ -161,6 +161,6 @@ class UrlServiceTest {
         RuntimeException ex = assertThrows(RuntimeException.class, () ->
                 urlService.deleteUrl(id, userDetails));
 
-        assertEquals("Permissão negada!", ex.getMessage());
+        assertEquals("Sem permissão ao recurso", ex.getMessage());
     }
 }

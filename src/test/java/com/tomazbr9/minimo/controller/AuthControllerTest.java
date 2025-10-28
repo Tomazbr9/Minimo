@@ -48,8 +48,8 @@ class AuthControllerTest {
 
     @BeforeEach
     void setUp() {
-        userRequestDTO = new UserRequestDTO("bruno", "123", RoleName.ROLE_USER);
-        loginDTO = new LoginDTO("bruno", "123");
+        userRequestDTO = new UserRequestDTO("bruno", "123456", RoleName.ROLE_USER);
+        loginDTO = new LoginDTO("bruno", "123456");
         jwtTokenDTO = new JwtTokenDTO("fake-jwt-token");
     }
 

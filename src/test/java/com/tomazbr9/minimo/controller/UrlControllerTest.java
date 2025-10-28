@@ -16,6 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDate;
 import java.util.UUID;
 import java.util.List;
 
@@ -51,15 +52,15 @@ class UrlControllerTest {
     @BeforeEach
     void setUp() {
         requestDTO = new UrlRequestDTO("myUrl","myAlias", "http://example.com");
-        responseDTO = new UrlResponseDTO(UUID.randomUUID(), "myAlias", 10, "myAlias", "http://example.com");
+        responseDTO = new UrlResponseDTO(UUID.randomUUID(), "myAlias", 10, "myAlias", "http://example.com", LocalDate.now());
     }
 
     @Test
     void shouldReturnAllUserUrls() throws Exception {
 
         List<UrlResponseDTO> response = List.of(
-                new UrlResponseDTO(UUID.randomUUID(), "myUrl1", 10, "myAlias1", "http://example.com"),
-                new UrlResponseDTO(UUID.randomUUID(), "myUrl2", 10, "myAlias2", "http://example.com")
+                new UrlResponseDTO(UUID.randomUUID(), "myUrl1", 10, "myAlias1", "http://example.com", LocalDate.now()),
+                new UrlResponseDTO(UUID.randomUUID(), "myUrl2", 10, "myAlias2", "http://example.com", LocalDate.now())
         );
 
         Mockito.when(urlService.findUrls(any())).thenReturn(response);
@@ -82,7 +83,8 @@ class UrlControllerTest {
                 "myUrl",
                 10,
                 "myAlias",
-                "http://example.com"
+                "http://example.com",
+                LocalDate.now()
         );
 
         Mockito.when(urlService.findUrlById(Mockito.eq(id), any()))

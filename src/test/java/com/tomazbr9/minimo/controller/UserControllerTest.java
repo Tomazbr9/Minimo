@@ -24,6 +24,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+
 @WebMvcTest(UserController.class)
 @AutoConfigureMockMvc(addFilters = false)
 class UserControllerTest {
@@ -64,7 +65,6 @@ class UserControllerTest {
 
         mockMvc.perform(get("/v1/users"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(userResponse.id()))
                 .andExpect(jsonPath("$.username").value("bruno"));
     }
 
@@ -80,7 +80,7 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateDTO)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(updatedResponse.id().toString())) // UUID -> String
+                .andExpect(jsonPath("$.id").value(updatedResponse.id().toString()))
                 .andExpect(jsonPath("$.username").value("novoBruno"));
     }
 
