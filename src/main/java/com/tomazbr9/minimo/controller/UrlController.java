@@ -25,7 +25,7 @@ import java.util.UUID;
 
 @Tag(
         name = "Url",
-        description = "Operações para recuperar, criar e deletar urls encurtadas"
+        description = "Operações para recuperar, criar, atualizar e deletar URLs encurtadas."
 )
 @RestController
 @RequestMapping("/v1/url")
@@ -102,24 +102,74 @@ public class UrlController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @Operation(
+            summary = "Atualizar URL existente",
+            description = "Permite atualizar informações de uma URL encurtada específica, caso ela pertença ao usuário autenticado."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "202", description = "URL atualizada com sucesso",
+                    content = @Content(schema = @Schema(implementation = UrlPutDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos enviados na requisição",
+                    content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "401", description = "Usuário não autenticado",
+                    content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "404", description = "URL não encontrada ou não pertence ao usuário",
+                    content = @Content(schema = @Schema(hidden = true)))
+    })
     @PutMapping("/{id}")
-    public ResponseEntity<UrlPutDTO> putUrl(@PathVariable UUID id, @RequestBody UrlPutDTO request, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public ResponseEntity<UrlPutDTO> putUrl(
+            @Parameter(description = "ID da URL que será atualizada", required = true)
+            @PathVariable UUID id,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Novos dados da URL encurtada",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = UrlPutDTO.class))
+            )
+            @RequestBody UrlPutDTO request,
+            @Parameter(hidden = true)
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         UrlPutDTO response = service.putUrl(id, request, userDetails);
-
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
-
     }
 
+    @Operation(
+            summary = "Deletar URL encurtada",
+            description = "Remove permanentemente uma URL encurtada específica, caso pertença ao usuário autenticado."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "URL deletada com sucesso",
+                    content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "401", description = "Usuário não autenticado",
+                    content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "404", description = "URL não encontrada ou não pertence ao usuário",
+                    content = @Content(schema = @Schema(hidden = true)))
+    })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUrl(@PathVariable UUID id, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public ResponseEntity<Void> deleteUrl(
+            @Parameter(description = "ID da URL a ser deletada", required = true)
+            @PathVariable UUID id,
+            @Parameter(hidden = true)
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
         service.deleteUrl(id, userDetails);
         return ResponseEntity.noContent().build();
-
     }
 
+    @Operation(
+            summary = "Obter estatísticas de cliques das URLs do usuário",
+            description = "Retorna o total de cliques somados de todas as URLs do usuário autenticado e a URL mais clicada."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Estatísticas retornadas com sucesso",
+                    content = @Content(schema = @Schema(implementation = TotalClicksAndMostClickedDTO.class))),
+            @ApiResponse(responseCode = "401", description = "Usuário não autenticado",
+                    content = @Content(schema = @Schema(hidden = true)))
+    })
     @GetMapping("/totalclicksurls")
-    public ResponseEntity<TotalClicksAndMostClickedDTO> totalClicksOfAllUrls(@AuthenticationPrincipal UserDetailsImpl userDetails){
+    public ResponseEntity<TotalClicksAndMostClickedDTO> totalClicksOfAllUrls(
+            @Parameter(hidden = true)
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         TotalClicksAndMostClickedDTO response = service.totalClicksOfAllUrls(userDetails);
         return ResponseEntity.ok(response);
