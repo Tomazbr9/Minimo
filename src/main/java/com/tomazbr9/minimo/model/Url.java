@@ -2,6 +2,7 @@ package com.tomazbr9.minimo.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.validator.constraints.URL;
 
 import java.io.Serializable;
 import java.time.LocalDate;
