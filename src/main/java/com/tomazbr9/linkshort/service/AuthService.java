@@ -3,6 +3,7 @@ package com.tomazbr9.linkshort.service;
 import com.tomazbr9.linkshort.dto.authDTO.JwtTokenDTO;
 import com.tomazbr9.linkshort.dto.authDTO.LoginDTO;
 import com.tomazbr9.linkshort.dto.userDTO.UserRequestDTO;
+import com.tomazbr9.linkshort.exception.UsernameAlreadyExistsException;
 import com.tomazbr9.linkshort.model.Role;
 import com.tomazbr9.linkshort.model.User;
 import com.tomazbr9.linkshort.repository.RoleRepository;
@@ -45,7 +46,7 @@ public class AuthService {
         Role role = roleRepository.findByName(request.role()).orElseThrow(() -> new RuntimeException("Papel não encontrado"));
 
         if(userRepository.existsByUsername(request.username())){
-            throw new RuntimeException("Nome de usário ja existe");
+            throw new UsernameAlreadyExistsException("Nome de usuário ja existe");
         }
 
         User user = User.builder()

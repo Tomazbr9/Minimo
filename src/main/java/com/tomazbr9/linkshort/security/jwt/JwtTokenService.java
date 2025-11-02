@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.tomazbr9.linkshort.security.model.UserDetailsImpl;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -15,7 +16,9 @@ import java.time.ZonedDateTime;
 public class JwtTokenService {
 
     // Chave secreta usada para assinar e validar o token (nunca expor isso publicamente)
-    private static final String SECRET_KEY = "chave-secreta";
+
+    @Value("${SECRET_KEY")
+    private String SECRET_KEY;
 
     // Identificador da aplicação que está emitindo o token
     private static final String ISSUER = "pizzurg-api";
