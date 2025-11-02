@@ -37,3 +37,6 @@ target/
 
 # Maven
 target/
+
+# Security
+.env

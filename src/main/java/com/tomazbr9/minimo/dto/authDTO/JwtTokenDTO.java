@@ -1,6 +1,0 @@
-package com.tomazbr9.minimo.dto.authDTO;
-
-public record JwtTokenDTO(
-        String token
-) {
-}

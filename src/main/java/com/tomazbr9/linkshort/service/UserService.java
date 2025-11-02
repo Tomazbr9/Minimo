@@ -1,0 +1,45 @@
+package com.tomazbr9.linkshort.service;
+
+import com.tomazbr9.linkshort.dto.userDTO.UserResponseDTO;
+import com.tomazbr9.linkshort.dto.userDTO.UserUpdateDTO;
+import com.tomazbr9.linkshort.model.User;
+import com.tomazbr9.linkshort.repository.UserRepository;
+import com.tomazbr9.linkshort.security.model.UserDetailsImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+@Service
+public class UserService {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    public UserResponseDTO findAuthenticatedUser(UserDetailsImpl userDetails){
+        User user = checkIfUserExists(userDetails);
+        return new UserResponseDTO(user.getId(), user.getUsername());
+    }
+
+    public UserResponseDTO updateUser(UserUpdateDTO dto, UserDetailsImpl userDetails){
+
+        User user = checkIfUserExists(userDetails);
+
+        user.setUsername(dto.username());
+        user.setPassword(dto.password());
+
+        userRepository.save(user);
+        return new UserResponseDTO(user.getId(), user.getUsername());
+    }
+
+    public void deleteUser(UserDetailsImpl userDetails){
+        User user = checkIfUserExists(userDetails);
+        userRepository.delete(user);
+    }
+
+    private User checkIfUserExists(UserDetailsImpl userDetails){
+        return userRepository.findByUsername(
+                userDetails.getUsername()
+        ).orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado."));
+    }
+
+}

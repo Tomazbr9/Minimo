@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.tomazbr9</groupId>
-	<artifactId>minimo</artifactId>
+	<artifactId>LinkShort</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>minimo</name>
 	<description>Demo project for Spring Boot</description>
