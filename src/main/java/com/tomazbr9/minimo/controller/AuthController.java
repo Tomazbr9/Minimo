@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/v1/auth")
 public class AuthController {
+
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     @Autowired
     private AuthService service;
@@ -44,8 +48,14 @@ public class AuthController {
                     content = @Content(schema = @Schema(implementation = UserRequestDTO.class))
             )
             @RequestBody @Valid UserRequestDTO request) {
+
+        logger.info("Recebida requisição para criar usuário: {}", request.username());
+
         service.registerUser(request);
-        return new ResponseEntity<>("Usuário Criado com sucesso!", HttpStatus.CREATED);
+
+        logger.info("Usuário criado com sucesso.");
+
+        return new ResponseEntity<>("Usuário criado com sucesso!", HttpStatus.CREATED);
     }
 
     @Operation(
@@ -66,7 +76,13 @@ public class AuthController {
                     content = @Content(schema = @Schema(implementation = LoginDTO.class))
             )
             @RequestBody LoginDTO request) {
+
+        logger.info("Recebida requisição para logar usuário: {}", request.username());
+
         JwtTokenDTO token = service.authenticateUser(request);
+
+        logger.info("Usuário logado com sucesso");
+
         return new ResponseEntity<>(token, HttpStatus.OK);
     }
 }

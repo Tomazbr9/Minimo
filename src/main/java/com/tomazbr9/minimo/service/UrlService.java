@@ -15,6 +15,8 @@ import com.tomazbr9.minimo.repository.UserRepository;
 import com.tomazbr9.minimo.security.model.UserDetailsImpl;
 import com.tomazbr9.minimo.util.ShortUrlGenerator;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,8 @@ import java.util.UUID;
 
 @Service
 public class UrlService {
+
+    private static final Logger logger = LoggerFactory.getLogger(UrlService.class);
 
     @Autowired
     private UrlRepository urlRepository;
@@ -86,6 +90,8 @@ public class UrlService {
 
         urlRepository.save(url);
 
+        logger.info("Url salva no banco de dados");
+
         return new UrlResponseDTO(url.getId(), url.getUrlName(), url.getTotalClicks(), url.getShortenedUrl(), url.getOriginalUrl(), url.getCreatedIn());
     }
 
@@ -98,6 +104,8 @@ public class UrlService {
 
         urlRepository.save(url);
 
+        logger.info("Url atualizada e salva no banco  de dados");
+
         return new UrlPutDTO(url.getUrlName(), url.getOriginalUrl());
 
     }
@@ -106,9 +114,13 @@ public class UrlService {
     public void deleteUrl(UUID id, UserDetailsImpl userDetails){
         Url url = checkIfUrlExists(id);
         checkIfResourceBelongsToUser(userDetails, url);
+
         urlRepository.delete(url);
+
+        logger.info("Url deletada do banco de dados");
     }
 
+    @Transactional
     public TotalClicksAndMostClickedDTO totalClicksOfAllUrls(UserDetailsImpl userDetails){
 
         User user = checkIfUserExists(userDetails);

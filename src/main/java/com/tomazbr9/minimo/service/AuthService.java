@@ -1,5 +1,6 @@
 package com.tomazbr9.minimo.service;
 
+import com.tomazbr9.minimo.MinimoApplication;
 import com.tomazbr9.minimo.dto.authDTO.JwtTokenDTO;
 import com.tomazbr9.minimo.dto.authDTO.LoginDTO;
 import com.tomazbr9.minimo.dto.userDTO.UserRequestDTO;
@@ -10,6 +11,8 @@ import com.tomazbr9.minimo.repository.UserRepository;
 import com.tomazbr9.minimo.security.SecurityConfiguration;
 import com.tomazbr9.minimo.security.jwt.JwtTokenService;
 import com.tomazbr9.minimo.security.model.UserDetailsImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +23,8 @@ import java.util.List;
 
 @Service
 public class AuthService {
+
+    private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
 
     @Autowired
     private JwtTokenService jwtTokenService;
@@ -46,7 +51,10 @@ public class AuthService {
                 .roles(List.of(role))
                 .build();
 
+
         userRepository.save(user);
+
+        logger.info("Usuário salvo no banco de dados");
     }
 
     public JwtTokenDTO authenticateUser(LoginDTO request){

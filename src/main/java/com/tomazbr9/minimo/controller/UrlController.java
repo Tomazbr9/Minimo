@@ -14,6 +14,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +32,8 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/v1/url")
 public class UrlController {
+
+    private static final Logger logger = LoggerFactory.getLogger(UrlController.class);
 
     @Autowired
     private UrlService service;
@@ -48,6 +52,8 @@ public class UrlController {
     public ResponseEntity<List<UrlResponseDTO>> findUrls(
             @Parameter(hidden = true)
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        logger.info("Recebida requisição para exibir todas as urls do usuário.");
 
         List<UrlResponseDTO> urlsList = service.findUrls(userDetails);
         return ResponseEntity.ok(urlsList);
@@ -71,6 +77,8 @@ public class UrlController {
             @PathVariable UUID id,
             @Parameter(hidden = true)
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        logger.info("Recebida requisição para buscar url por id.");
 
         UrlResponseDTO response = service.findUrlById(id, userDetails);
         return ResponseEntity.ok(response);
@@ -98,7 +106,11 @@ public class UrlController {
             @RequestBody @Valid UrlRequestDTO request,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
+        logger.info("Recebida requisição para criar url: {}", request.urlName());
+
         UrlResponseDTO response = service.createShortUrl(request, userDetails);
+
+        logger.info("Url criada com sucesso.");
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -129,7 +141,12 @@ public class UrlController {
             @Parameter(hidden = true)
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
+        logger.info("Recebida requisição para atualizar dados da url do usuário");
+
         UrlPutDTO response = service.putUrl(id, request, userDetails);
+
+        logger.info("Url atualizada com sucesso.");
+
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
     }
 
@@ -152,7 +169,12 @@ public class UrlController {
             @Parameter(hidden = true)
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
+        logger.info("Recebida requisição para deletar url do usuário");
+
         service.deleteUrl(id, userDetails);
+
+        logger.info("Url deletada com sucesso.");
+
         return ResponseEntity.noContent().build();
     }
 
@@ -170,6 +192,8 @@ public class UrlController {
     public ResponseEntity<TotalClicksAndMostClickedDTO> totalClicksOfAllUrls(
             @Parameter(hidden = true)
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        logger.info("Recebida requisição para retornar total de cliques e maior numero de cliques de uma url");
 
         TotalClicksAndMostClickedDTO response = service.totalClicksOfAllUrls(userDetails);
         return ResponseEntity.ok(response);

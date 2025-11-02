@@ -24,16 +24,19 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UrlAlreadyExistsException.class)
     public ResponseEntity<ErrorResponseDTO> handleUrlAlreadyException (UrlAlreadyExistsException exeption, HttpServletRequest request) {
+        logger.warn("Tentativa de criar url curta já existente.");
         return buildErrorResponse(exeption.getMessage(), request.getRequestURI(), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(UrlNotFoundException.class)
     public ResponseEntity<ErrorResponseDTO> handleUrlNotFoundException(UrlNotFoundException exception, HttpServletRequest request) {
+        logger.warn("Url não encontrada.");
         return buildErrorResponse(exception.getMessage(), request.getRequestURI(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(PermissionDeniedToAccessResourceException.class)
     public ResponseEntity<ErrorResponseDTO> handlePermissionDaniedToAccessResourceException(PermissionDeniedToAccessResourceException exception, HttpServletRequest request) {
+        logger.warn("Usuário tentou acessar recurso sem permissão");
         return buildErrorResponse(exception.getMessage(), request.getRequestURI(), HttpStatus.FORBIDDEN);
     }
 
