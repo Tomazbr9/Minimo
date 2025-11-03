@@ -74,6 +74,8 @@ LinkShort/
 - **Java 17**
 - **Spring Boot 3.x**
 - **Spring Web**
+- **Spring Security**
+- **JWT**
 - **Spring Data JPA**
 - **PostgreSQL**
 - **Lombok**
