@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
         description = "Operações para registro e login de usuários"
 )
 @RestController
-@RequestMapping("/v1/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);

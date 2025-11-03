@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
         description = "Operações para recuperar, atualizar e deletar usuários"
 )
 @RestController
-@RequestMapping("v1/users")
+@RequestMapping("api/users")
 public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);

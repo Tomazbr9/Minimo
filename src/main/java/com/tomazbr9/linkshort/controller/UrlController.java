@@ -30,7 +30,7 @@ import java.util.UUID;
         description = "Operações para recuperar, criar, atualizar e deletar URLs encurtadas."
 )
 @RestController
-@RequestMapping("/v1/url")
+@RequestMapping("/api/url")
 public class UrlController {
 
     private static final Logger logger = LoggerFactory.getLogger(UrlController.class);

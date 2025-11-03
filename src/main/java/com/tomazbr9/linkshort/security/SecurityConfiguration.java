@@ -25,8 +25,8 @@ public class SecurityConfiguration {
 
     // Endpoints que não exigem autenticação
     public static final String[] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = {
-            "/v1/auth/register",
-            "/v1/auth/login",
+            "/api/auth/register",
+            "/api/auth/login",
 
             "/swagger-ui/**",
             "/v3/api-docs/**",
@@ -36,8 +36,8 @@ public class SecurityConfiguration {
 
     // Endpoints que exigem perfil de Usuário
     public static final String[] ENDPOINTS_USER = {
-            "/v1/url/**",
-            "/v1/users/**"
+            "/api/url/**",
+            "/api/users/**"
 
     };
 
