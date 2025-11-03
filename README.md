@@ -2,10 +2,10 @@
 
 **Java • Spring Boot • PostgreSQL • Docker**
 
-O **LinkShort** é uma aplicação web desenvolvida com **Java e Spring Boot**, seguindo a **arquitetura em camadas (Controller, Service, Repository)**.  
-Seu objetivo é **encurtar URLs longas em links curtos**, armazenando-os de forma eficiente e garantindo redirecionamento rápido e seguro.
+**LinkShort** transforma URLs longas em versões curtas e fáceis de compartilhar.  
+Além disso, registra métricas básicas, como data de criação e número de acessos, permitindo rastrear a popularidade de cada link.
 
-A aplicação foi projetada para ser **modular, escalável e fácil de manter**, com camadas bem definidas, boas práticas de código e integração com banco de dados **PostgreSQL**.
+O **Linkshort** também conta com autenticação baseada em **JWT (JSON Web Tokens)**, garantindo que apenas usuários autenticados possam encurtar URLs, consultar estatísticas e acessar endpoints privados.
 
 ---
 
