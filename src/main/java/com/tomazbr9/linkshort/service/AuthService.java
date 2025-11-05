@@ -45,9 +45,7 @@ public class AuthService {
 
         Role role = roleRepository.findByName(request.role()).orElseThrow(() -> new RuntimeException("Papel não encontrado"));
 
-        if(userRepository.existsByUsername(request.username())){
-            throw new UsernameAlreadyExistsException("Nome de usuário ja existe");
-        }
+        checkIfTheUsernameExists(request.username());
 
         User user = User.builder()
                 .username(request.username())
@@ -70,6 +68,12 @@ public class AuthService {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
         return new JwtTokenDTO(jwtTokenService.generateToken(userDetails));
+    }
+
+    public void checkIfTheUsernameExists(String username) {
+        if(userRepository.existsByUsername(username)){
+            throw new UsernameAlreadyExistsException("Nome de usuário ja existe");
+        }
     }
 
 }

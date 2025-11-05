@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(UsernameAlreadyExistsException.class)
-    public ResponseEntity<ErrorResponseDTO> handleUsernameAlreadyExistsException(UrlNotFoundException exception, HttpServletRequest request) {
+    public ResponseEntity<ErrorResponseDTO> handleUsernameAlreadyExistsException(UsernameAlreadyExistsException exception, HttpServletRequest request) {
         logger.warn("Nome de usuário já existe.");
         return buildErrorResponse(exception.getMessage(), request.getRequestURI(), HttpStatus.CONFLICT);
     }
