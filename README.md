@@ -10,13 +10,15 @@ O **Linkshort** também conta com autenticação baseada em **JWT (JSON Web Toke
 ---
 
 ## Sumário
-- [Visão Geral](#-visão-geral)
+- [Visão Geral](#visão-geral)
+- [Interface Web]()
 - [Arquitetura do Projeto](#-arquitetura-do-projeto)
 - [Tecnologias e Ferramentas](#-tecnologias-e-ferramentas)
 - [Camadas do Sistema](#-camadas-do-sistema)
 - [Banco de Dados](#-banco-de-dados)
 - [Variáveis de Ambiente](#-variáveis-de-ambiente)
 - [Execução do Projeto](#-execução-do-projeto)
+- [Documentação da API (Swagger / OpenAPI)](#documentação-da-api-swagger--openapi)
 - [Endpoints Principais](#-endpoints-principais)
 - [Boas Práticas e Padrões](#-boas-práticas-e-padrões)
 - [Testes](#-testes)
@@ -36,6 +38,20 @@ Além disso, registra métricas básicas, como data de criação e número de ac
 - Redirecionamento automático para a URL original;
 - Registro e consulta de estatísticas básicas;
 - Validação e tratamento de erros personalizados.
+
+---
+
+## Interface Web (Frontend)
+
+O frontend do **URLShortener** é desenvolvido em **Angular + TypeScript** e está disponível em um repositório separado:
+
+➡️ [**LinkShortUI – Interface Web (Angular)**](https://github.com/Tomazbr9/LinkShortUI)
+
+Este projeto oferece uma experiência moderna, responsiva e integrada ao backend, com:
+
+- 🔐 **Autenticação JWT**
+- 🔗 **Criação e gerenciamento de URLs encurtadas**
+- 🎨 **Design profissional e responsivo**
 
 ---
 
@@ -68,7 +84,7 @@ LinkShort/
 └── README.md
 
 ```
-
+---
 ## Tecnologias e Ferramentas
 
 - **Java 17**
@@ -172,7 +188,25 @@ docker-compose up --build
 
 ---
 
-## 🔗 Endpoints Principais
+## Documentação da API (Swagger / OpenAPI)
+
+A documentação da API do **LinkShort** foi gerada com **Swagger** (OpenAPI) e está disponível diretamente no backend.
+
+### Como acessar
+
+1. Certifique-se de que o servidor backend esteja em execução.
+2. Acesse a seguinte URL no navegador: http://localhost:8080/swagger-ui/index.html
+
+*(O endereço pode variar conforme a configuração do seu ambiente — ajuste a porta ou o caminho, se necessário.)*
+
+3. A interface do **Swagger UI** permitirá:
+- Explorar os endpoints da API
+- Testar requisições diretamente pelo navegador
+- Visualizar exemplos de respostas e modelos de dados
+
+---
+
+## Endpoints Principais
 
 | Método     | Endpoint        | Descrição                               |
 |------------|-----------------|-----------------------------------------|
@@ -183,7 +217,6 @@ docker-compose up --build
 | **PUT**    | `/api/url/{id}` | Atualiza uma URL do sistema             |
 | **DELETE** | `/api/url/{id}` | Remove uma URL do sistema               |
 
----
 
 ### Exemplo de Encurtamento
 
