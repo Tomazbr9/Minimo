@@ -97,6 +97,7 @@ LinkShort/
 - **Lombok**
 - **Docker & Docker Compose**
 - **JUnit 5 / Mockito**
+- **Swagger/OpenAPI**
 
 ---
 
